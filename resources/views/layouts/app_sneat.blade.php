@@ -32,7 +32,7 @@
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('sneat') }}/assets/img/favicon/Logo_Sekolah_Alam.png" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('sneat') }}/assets/img/favicon/Logo.png" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -74,10 +74,13 @@
 
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
-              <span><img src="{{ asset('sneat') }}/assets/img/favicon/Logo_Sekolah_Alam.png" width="45px" height="50px" alt=""></span>
-              <span class="app-brand-text demo menu-text fw-bolder ms-2">Sekolah Alam</span>
-            </a>
+            <a  href="index.html" class="app-brand-link">
+              <img src="{{ asset('sneat') }}/assets/img/favicon/Logo.png" width="60px" height="60px" alt="">
+                <div class="app-brand-text menu-text fw-bolder d-flex flex-column ms-3">
+                  <span style="font-size: 30px;">Sekolah</span>
+                  <span class="text-center" style="font-size: 30px;">Alam</span>
+                </div>
+              </a>
 
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
               <i class="bx bx-chevron-left bx-sm align-middle"></i>
@@ -109,13 +112,19 @@
             <li class="menu-item {{ \Route::is('siswa.*') ? 'active' : '' }}">
               <a href="{{ route('siswa.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Data siswa</div>
+                <div data-i18n="Basic">Data Siswa</div>
               </a>
             </li>
             <li class="menu-item {{ \Route::is('biaya.*') ? 'active' : '' }}">
               <a href="{{ route('biaya.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Data biaya</div>
+                <div data-i18n="Basic">Data Biaya</div>
+              </a>
+            </li>
+            <li class="menu-item {{ \Route::is('tagihan.*') ? 'active' : '' }}">
+              <a href="{{ route('tagihan.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-collection"></i>
+                <div data-i18n="Basic">Data Tagihan</div>
               </a>
             </li>
             <li class="menu-item">
@@ -230,10 +239,10 @@
 
             <div class="container-xxl flex-grow-1 container-p-y">
               @if ($errors->any())
-                  <div class="alert alert-primary" role="alert">
+<div class="alert alert-primary" role="alert">
                     {!! implode('', $errors->all('<div>:message</div>')) !!}
                   </div>
-              @endif
+@endif
               @include('flash::message')
               @yield('content')
             </div>
@@ -274,8 +283,12 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
     <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.mask.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+            $('.rupiah').mask("#.##0", {
+                reverse: true
+            });
             $('.select2').select2();
         });
     </script>

@@ -22,8 +22,20 @@ class UpdateBiayaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama' => 'required|unique:biayas,Nama Biaya,' . $this->biaya,
-            'jumlah' => 'required',
+            'nama' => 'required|unique:biayas,nama,' . $this->biaya,
+            'jumlah' => 'required|numeric',
         ];
+    }
+
+    /**
+     * Prepare the data for validation
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'jumlah' => str_replace('.', '', $this->jumlah),
+        ]);
     }
 }

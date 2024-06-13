@@ -5,15 +5,22 @@
             <div class="card">
                 <h5 class="card-header">{{ $title }}</h5>
                 <div class="card-body">
-                    <a href="{{ route($routePrefix . '.create') }}" class="btn btn-primary btn-sm">Tambah Data</a>
-                    {!! Form::open(['route' => $routePrefix . '.index', 'method' => 'GET']) !!}
-                    <div class="input-group">
-                        <input name="q" type="text" class="form-control" placeholder="Cari Data Biaya" aria-label="Cari Nama" aria-describedby="button-addon2" value="{{ request('q') }}">
-                        <button type="submit" class="btn btn-outline-primary" id="button-addon2">
-                            <i class="bx bx-search"></i>
-                        </button>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ route($routePrefix . '.create') }}" class="btn btn-primary btn-sm">Tambah Data</a>
+                        </div>
+                        <div class="col-md-6">
+                            {!! Form::open(['route' => $routePrefix . '.index', 'method' => 'GET']) !!}
+                            <div class="input-group">
+                                <input name="q" type="text" class="form-control" placeholder="Cari Data"
+                                    aria-label="Cari Data" aria-describedby="button-addon2" value="{{ request('q') }}">
+                                <button type="submit" class="btn btn-outline-primary" id="button-addon2">
+                                    <i class="bx bx-search"></i>
+                                </button>
+                            </div>
+                            {!! Form::close() !!}
+                        </div>
                     </div>
-                    {!! Form::close() !!}
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -30,7 +37,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->nama }}</td>
-                                        <td>{{ $item->jumlah }}</td>
+                                        <td>{{ $item->formatRupiah('jumlah') }}</td>
                                         <td>{{ $item->user->name }}</td>
                                         <td>
                                             {!! Form::open([

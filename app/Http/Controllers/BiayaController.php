@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateBiayaRequest;
 use App\Http\Requests\StoreBiayaRequest;
-use App\Models\Biaya;
+use App\Http\Requests\StoreSiswaRequest;
+use App\Http\Requests\UpdateBiayaRequest;
+use App\Http\Requests\UpdateSiswaRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Biaya as Model;
 use Illuminate\Support\Facades\Storage;
 
 class BiayaController extends Controller
@@ -15,22 +18,22 @@ class BiayaController extends Controller
     private $viewEdit = 'biaya_form';
     private $viewShow = 'biaya_show';
     private $routePrefix = 'biaya';
-
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
         if ($request->filled('q')) {
-            $models = Biaya::with('user')->search($request->q)->paginate(50);
+            $models = Model::with('user')
+                ->search($request->q)
+                ->paginate(50);
         } else {
-            $models = Biaya::with('user')->latest()->paginate(50);
+            $models = Model::with('user')->latest()->paginate(50);
         }
-
         return view('operator.' . $this->viewIndex, [
             'models' => $models,
             'routePrefix' => $this->routePrefix,
-            'title' => 'Data Biaya'
+            'title' => 'Data Biaya',
         ]);
     }
 
@@ -40,7 +43,7 @@ class BiayaController extends Controller
     public function create()
     {
         $data = [
-            'model' => new Biaya(),
+            'model' => new Model(),
             'method' => 'POST',
             'route' => $this->routePrefix . '.store',
             'button' => 'SIMPAN',
@@ -54,13 +57,9 @@ class BiayaController extends Controller
      */
     public function store(StoreBiayaRequest $request)
     {
-        $requestData = $request->validated();
-        $requestData['user_id'] = auth()->user()->id;
-
-        Biaya::create($requestData);
-
+        Model::create($request->validated());
         flash('Data Berhasil Disimpan');
-        return redirect()->route($this->routePrefix . '.index');
+        return back();
     }
 
     /**
@@ -69,8 +68,8 @@ class BiayaController extends Controller
     public function show(string $id)
     {
         return view('operator.' . $this->viewShow, [
-            'model' => Biaya::findOrFail($id),
-            'title' => 'Detail Biaya'
+            'model' => Model::findOrFail($id),
+            'title' => 'Detail Siswa',
         ]);
     }
 
@@ -80,7 +79,7 @@ class BiayaController extends Controller
     public function edit(string $id)
     {
         $data = [
-            'model' => Biaya::findOrFail($id),
+            'model' => Model::findOrFail($id),
             'method' => 'PUT',
             'route' => [$this->routePrefix . '.update', $id],
             'button' => 'UPDATE',
@@ -94,15 +93,11 @@ class BiayaController extends Controller
      */
     public function update(UpdateBiayaRequest $request, string $id)
     {
-        $requestData = $request->validated();
-        $model = Biaya::findOrFail($id);
-        $requestData['user_id'] = auth()->user()->id;
-
-        $model->fill($requestData);
+        $model = Model::findOrFail($id);
+        $model->fill($request->validated());
         $model->save();
-
         flash('Data Berhasil Diubah');
-        return redirect()->route($this->routePrefix . '.index');
+        return back();
     }
 
     /**
@@ -110,10 +105,9 @@ class BiayaController extends Controller
      */
     public function destroy(string $id)
     {
-        $model = Biaya::findOrFail($id);
+        $model = Model::findOrFail($id);
         $model->delete();
-
         flash('Data Berhasil Dihapus');
-        return redirect()->route($this->routePrefix . '.index');
+        return back();
     }
 }

@@ -8,12 +8,10 @@
             <div class="card-body">
                 <table class="table table-sm">
                     <tr>
-                        <td rowspan="8" width="100">
+                        <td rowspan="3" width="150" class="align-middle">
                             <img src="{{ \Storage::url($siswa->foto) }}" alt="{{ $siswa->nama }}" width="150">
                         </td>
-                    </tr>
-                    <tr>
-                        <td width="50">NISN</td>
+                        <td width="100">NISN</td>
                         <td>: {{ $siswa->nisn }}</td>
                     </tr>
                     <tr>
@@ -29,7 +27,7 @@
 <div class="row mt-2">
     <div class="col-md-5">
         <div class="card">
-            <h5 class="card-header">DATA TAGIHAN {{ $periode }}</h5>
+            <h5 class="card-header pb-0">DATA TAGIHAN {{ strtoupper($periode) }}</h5>
             <div class="card-body">
                 <table class="table table-sm table-bordered">
                     <thead>
@@ -50,18 +48,41 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan='2'>Total Pembayaran</td>
-                            <td> {{ formatRupiah($tagihan->tagihanDetails->sum('jumlah_biaya')) }}</td>
+                            <td colspan='2' class="text-right">Total Pembayaran</td>
+                            <td>{{ formatRupiah($tagihan->tagihanDetails->sum('jumlah_biaya')) }}</td>
                         </tr>
                     </tfoot>
                 </table>
-                <h5>Status Pembayaran : {{ strtoupper($tagihan->status )}}</h5>
+                <h5 class="card-header pb-0 px-0">DATA PEMBAYARAN</h5>
+                <table class="table table-sm table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th width="1%">#</th>
+                            <th>TANGGAL</th>
+                            <th>JUMLAH</th>
+                            <th>METODE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($tagihan->pembayaran as $item)
+                            <tr>
+                                <td>
+                                    <a href="{{ route('kwitansipembayaran.show', $item->id) }}" target="blank"><i class="fa fa-print"></i></a>
+                                </td>
+                                <td>{{ \Carbon\Carbon::parse($item->tanggal_bayar)->translatedFormat('d/m/Y') }}</td>
+                                <td>{{ formatRupiah($item->jumlah_dibayar) }}</td>
+                                <td>{{ $item->metode_pembayaran }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <h5>Status Pembayaran: {{ strtoupper($tagihan->status) }}</h5>
             </div>
 
-            <h5 class="card-header">FORM PEMBAYARAN</h5>
+            <h5 class="card-header mt-4">FORM PEMBAYARAN</h5>
             <div class="card-body">
                 {!! Form::model($model, ['route' => 'pembayaran.store', 'method' => 'POST']) !!}
-                {!! Form::hidden('tagihan_id', $tagihan->id, []) !!}
+                {!! Form::hidden('tagihan_id', $tagihan->id) !!}
                 <div class="form-group">
                     <label for="tanggal_bayar">Tanggal Pembayaran</label>
                     {!! Form::date('tanggal_bayar', $model->tanggal_bayar ?? \Carbon\Carbon::now(), ['class' => 'form-control']) !!}

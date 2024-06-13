@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User as Model;
-use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -16,14 +15,6 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function view()
-    {
-        $select = DB::table("users")->get();
-        return response()->json([
-            "status" => 200,
-            "data" => $select
-        ]);
-    }
     public function index()
     {
         return view('operator.' . $this->viewIndex,[
@@ -55,24 +46,18 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-       try {
-            $model->name = $request->name;
-            $model->email = $request->email;
-            $model->nohp = $request->nohp;
-            $model->akses = $request->akses;
-            $model->password = $request->password;
-       } catch (\Throwable $th) {
-        return response()->json([
-            "status" => 400,
-            "message" => $th
+        $requestData = $request->validate([
+            'name' => 'required',
+            'email' => 'required|unique:users',
+            'nohp' => 'required|unique:users',
+            'akses' => 'required|in:operator,admin',
+            'password' => 'required'
         ]);
-       }
-       
-        return response()->json([
-        "status" => 200,
-        "message" => "Data successfully submited!!"
-        ]);
-
+        $requestData['password'] = bcrypt($requestData['password']);
+        $requestData['email_verified_at'] = now(); 
+        Model::create($requestData);
+        flash('Data Berhasil Disimpan');
+        return back();
     }
 
     /**

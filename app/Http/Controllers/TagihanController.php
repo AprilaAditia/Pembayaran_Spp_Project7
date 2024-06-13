@@ -119,7 +119,7 @@ class TagihanController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $tagihan = Model::with('siswa', 'tagihanDetails', 'user')->findOrFail($id);
+        $tagihan = Model::with('siswa', 'tagihanDetails', 'user','pembayaran')->findOrFail($id);
         $data['tagihan'] = $tagihan;
         $data['siswa'] = $tagihan->siswa;
         $data['periode'] = Carbon::parse($tagihan->tanggal_tagihan)->translatedFormat('F Y');

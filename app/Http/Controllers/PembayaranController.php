@@ -42,10 +42,10 @@ class PembayaranController extends Controller
             $tagihan->status = 'angsur';
         }
         $tagihan->save();
+       
         Pembayaran::create($requestData);
 
-        // Fix the flash message method call
-        session()->flash('success', 'Pembayaran Berhasil Disimpan');
+        flash('Pembayaran Berhasil Disimpan!')->success();
         return back();
     }
 
